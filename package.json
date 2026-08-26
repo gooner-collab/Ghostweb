@@ -1,52 +1,9 @@
 {
-  "name": "ghostweb",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "description": "A privacy-first Electron browser prototype with honest security status reporting.",
-  "main": "electron/main.cjs",
-  "scripts": {
-    "dev": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron .\"",
-    "dev:headless": "xvfb-run -a npm run dev",
-    "build": "tsc --noEmit && vite build",
-    "package:win": "npm run build && electron-builder --win nsis",
-    "package:linux": "npm run build && electron-builder --linux AppImage",
-    "package:dir": "npm run build && electron-builder --dir",
-    "test": "node --test tests/*.test.cjs",
-    "preview": "vite preview",
-    "start": "electron ."
-  },
-  "dependencies": {
-    "@vitejs/plugin-react": "latest",
-    "concurrently": "latest",
-    "lucide-react": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "typescript": "latest",
-    "vite": "latest",
-    "wait-on": "latest"
-  },
-  "devDependencies": {
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "electron": "^44.0.0",
-    "electron-builder": "latest"
-  },
-  "build": {
-    "appId": "com.ghostweb.browser",
-    "productName": "Ghostweb",
-    "asar": true,
-    "files": [
-      "dist/**/*",
-      "electron/**/*",
-      "package.json"
-    ],
-    "win": {
-      "target": "nsis"
-    },
-    "linux": {
-      "target": "AppImage",
-      "category": "Network"
-    }
-  }
+  "name":"ghostweb","version":"0.2.0","private":true,"type":"module",
+  "description":"Ghostweb — standalone privacy browser with an offline-first antivirus download security engine.",
+  "main":"electron/main.cjs",
+  "scripts":{"dev":"concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron .\"","build":"tsc --noEmit && vite build","package:win":"npm run build && electron-builder --win nsis","package:linux":"npm run build && electron-builder --linux AppImage","package:dir":"npm run build && electron-builder --dir","test":"node --test tests/*.test.cjs","start":"electron ."},
+  "dependencies":{"@vitejs/plugin-react":"latest","concurrently":"latest","lucide-react":"latest","react":"latest","react-dom":"latest","typescript":"latest","vite":"latest","wait-on":"latest"},
+  "devDependencies":{"@types/react":"latest","@types/react-dom":"latest","electron":"^44.0.0","electron-builder":"latest"},
+  "build":{"appId":"com.ghostweb.browser","productName":"Ghostweb","asar":true,"files":["dist/**/*","electron/**/*","package.json"],"win":{"target":"nsis","artifactName":"Ghostweb-Setup-${version}.${ext}"},"linux":{"target":"AppImage","category":"Network"}}
 }
