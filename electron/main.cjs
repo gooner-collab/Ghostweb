@@ -18,30 +18,38 @@ async function createWindow() {
     height: 940,
     minWidth: 980,
     minHeight: 680,
-    backgroundColor: '#f3f5ef',
+    backgroundColor: '#101412',
     session: browserSession,
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
+      webviewTag: true,
+      webSecurity: true,
       preload: path.join(__dirname, 'preload.cjs'),
     },
   });
   mainWindow = browserWindow;
 
-  browserWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+  browserWindow.webContents.setWindowOpenHandler(({ url }) => ({ action: 'deny' }));
+  browserWindow.webContents.on('will-attach-webview', (_event, webPreferences, params) => {
+    webPreferences.nodeIntegration = false;
+    webPreferences.contextIsolation = true;
+    webPreferences.sandbox = true;
+    webPreferences.preload = undefined;
+    if (!/^https?:/i.test(params.src || '')) params.src = 'about:blank';
+  });
 
   if (isDev) {
     browserWindow.loadURL('http://127.0.0.1:5173');
   } else {
-    browserWindow.loadFile(path.join(__dirname, '../dist/index.html'));
+    browserWindow.loadFile(path.join(__dirname, 'browser.html'));
   }
 }
 
 app.whenReady().then(async () => {
   session.defaultSession.clearCache();
   await createSession();
-  await initializeDownloads((downloads) => mainWindow?.webContents.send('downloads:updated', downloads));
   ipcMain.handle('session:get-status', () => getSessionStatus());
   ipcMain.handle('session:end', async () => {
     await clearDownloads();
@@ -66,6 +74,7 @@ app.whenReady().then(async () => {
   ipcMain.handle('network:disconnect', () => network.disconnect(getActiveSession()));
   ipcMain.handle('network:test', () => network.testConnection());
   await configureSession(getActiveSession(), getLevel());
+  await initializeDownloads((downloads) => mainWindow?.webContents.send('downloads:updated', downloads));
   await createWindow();
   attachDownloadListener(getActiveSession());
   app.on('activate', () => {
