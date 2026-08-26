@@ -1,4 +1,4 @@
-name: Build Ghostweb Windows App
+name: Build Ghostweb Windows Portable ZIP
 on:
   push:
     branches: [main, 'feature/**']
@@ -9,10 +9,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm }
+        with:
+          node-version: 22
+          cache: npm
       - run: npm ci
       - run: npm run package:win
       - uses: actions/upload-artifact@v4
         with:
-          name: Ghostweb-Windows
-          path: dist/Ghostweb-Setup-*.exe
+          name: Ghostweb-Windows-Portable
+          path: dist/Ghostweb-*-Windows-*.zip
