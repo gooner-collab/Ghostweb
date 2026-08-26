@@ -1,0 +1,20 @@
+name: Build Ghostweb Windows Portable ZIP
+on:
+  push:
+    branches: [main, 'feature/**']
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run package:win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Ghostweb-Windows-Portable
+          path: dist/Ghostweb-*-Windows-*.zip
